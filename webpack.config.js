@@ -9,13 +9,32 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
   filename: path.resolve('public/index.html'),
   inject: 'body'
 })
-console.log(path.resolve('public/dist'))
 
 module.exports = {
   entry: './src/app/index.js',
   output: {
     path: path.resolve('public'),
     filename: 'index_bundle.js'
+  },
+  devtool: "eval-source-map",
+  devServer: {
+    proxy: {
+      '/**': {  // path regex
+        target: '/index.html',
+        secure: true,
+        bypass: function(req, res, opt){
+          // exclusions for assets, api proxies, etc
+          // console.log('bypass check', {req: req, res:res, opt: opt});
+          if(req.path.indexOf('/images/') !== -1 || req.path.indexOf('/public/') !== -1){
+            return req.path;
+          }
+
+          if (req.headers.accept.indexOf('html') !== -1) {
+            return '/index.html';
+          }
+        }
+      }
+    }
   },
   plugins: [
     HtmlWebpackPluginConfig
