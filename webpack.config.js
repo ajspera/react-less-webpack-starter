@@ -16,7 +16,7 @@ module.exports = {
     path: path.resolve('public'),
     filename: 'index_bundle.js'
   },
-  devtool: "eval-source-map",
+  devtool: "source-map",
   devServer: {
     proxy: {
       '/**': {  // path regex
